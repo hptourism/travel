@@ -137,7 +137,7 @@ function EnquiryFormFields({
                 <option>Other</option>
               </select>
             </label>
-            <label className="block min-w-0 text-sm">
+            <label className={`block min-w-0 text-sm ${variant === "full" ? "max-sm:col-span-2" : ""}`}>
               <span className={labelClass}>Package</span>
               <select
                 name="packageName"
@@ -164,7 +164,7 @@ function EnquiryFormFields({
                   <span className={labelClass}>Travellers</span>
                   <input name="travellers" placeholder="2 adults, 1 child" className={fieldClass} />
                 </label>
-                <label className="col-span-2 block min-w-0 text-sm sm:col-span-1">
+                <label className="block min-w-0 text-sm">
                   <span className={labelClass}>Preferred dates</span>
                   <input name="dates" placeholder="12–17 May" className={fieldClass} />
                 </label>

@@ -72,20 +72,12 @@ export default function ContactPage() {
                   <li className="flex gap-3">
                     <IconPin className="mt-0.5 h-5 w-5 shrink-0 text-forest" />
                     <span>
-                      <span className="block font-semibold text-ink">Corporate office</span>
+                      <span className="block font-semibold text-ink">Delhi office</span>
                       {site.officeAddress}
                     </span>
                   </li>
                 ) : null}
-                {site.fleetStand ? (
-                  <li className="flex gap-3">
-                    <IconPin className="mt-0.5 h-5 w-5 shrink-0 text-forest" />
-                    <span>
-                      <span className="block font-semibold text-ink">Taxi fleet stand</span>
-                      {site.fleetStand}
-                    </span>
-                  </li>
-                ) : null}
+               
               </ul>
             </article>
             <article className="rounded-3xl bg-pine p-6 text-white">

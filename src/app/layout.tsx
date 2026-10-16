@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
+import { FloatingContacts } from "@/components/layout/FloatingContacts";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <Footer />
-        <WhatsAppButton />
+        <FloatingContacts />
       </body>
     </html>
   );
