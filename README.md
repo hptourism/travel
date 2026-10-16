@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Himalayan Travels
 
-## Getting Started
+Next.js site for HP Tourism: Home, Tour Packages, About Us and Contact Us.
 
-First, run the development server:
+## Run
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contact details
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Phone, WhatsApp, email and office addresses live in `.env`. Copy `.env.example` if you do not have one yet. Restart the dev server after changing them.
 
-## Learn More
+```
+NEXT_PUBLIC_WHATSAPP_NUMBER=919876543210
+NEXT_PUBLIC_PHONE=919876543210
+NEXT_PUBLIC_EMAIL=northhimalayantravels@gmail.com
+```
 
-To learn more about Next.js, take a look at the following resources:
+Use digits only for WhatsApp, including the country code.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Enquiry form and Pushover
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The contact form posts to `/api/enquiry`. The server sends the message to your Pushover app.
 
-## Deploy on Vercel
+1. Create a Pushover application at [pushover.net/apps/build](https://pushover.net/apps/build) and copy the API token.
+2. Copy your user key from the Pushover dashboard.
+3. Put both values in `.env`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+PUSHOVER_API_TOKEN=your_app_token
+PUSHOVER_USER_KEY=your_user_key
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Do not commit `.env`. Those keys stay on the server.
