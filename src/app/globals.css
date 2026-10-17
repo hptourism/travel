@@ -3,6 +3,7 @@
 :root {
   --background: #f6f1e7;
   --foreground: #14261e;
+  --scrollbar-compensation: 0px;
 }
 
 @theme inline {

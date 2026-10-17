@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { EnquiryTrigger } from "@/components/forms/EnquiryTrigger";
 import { IconCheck } from "@/components/ui/Icons";
 import { getPackage, packages } from "@/data/packages";
 import { formatInr } from "@/lib/format";
@@ -133,9 +134,13 @@ export default async function PackageDetailPage({ params }: Props) {
             )}
             <p className="mt-4 text-xs leading-relaxed text-muted">{pkg.priceNote}</p>
             <div className="mt-5 grid gap-2">
-              <Link href={`/contact?package=${pkg.slug}`} className={buttonClass("primary", "w-full")}>
+              <EnquiryTrigger
+                packageSlug={pkg.slug}
+                source={`Package page · ${pkg.title}`}
+                className={buttonClass("primary", "w-full")}
+              >
                 Enquire about this package
-              </Link>
+              </EnquiryTrigger>
               {pkg.pdf ? (
                 <a href={pkg.pdf} target="_blank" rel="noopener noreferrer" className={buttonClass("light", "w-full")}>
                   Download itinerary PDF

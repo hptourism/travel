@@ -59,6 +59,7 @@ export default function HomePage() {
           </div>
           <EnquiryForm
             variant="compact"
+            source="Home page hero form"
             title="Plan your Himachal trip"
             subtitle="Send your requirement and our team will prepare the right package."
           />

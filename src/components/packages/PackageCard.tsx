@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { EnquireNowButton } from "@/components/forms/EnquiryTrigger";
 import type { TourPackage } from "@/data/packages";
 import { formatInr } from "@/lib/format";
 import { buttonClass } from "@/lib/styles";
@@ -50,13 +51,7 @@ export function PackageCard({ pkg }: { pkg: TourPackage }) {
             <span className="sm:hidden">Itinerary</span>
             <span className="hidden sm:inline">View itinerary</span>
           </Link>
-          <Link
-            href={`/contact?package=${pkg.slug}`}
-            className={buttonClass("primary", "w-full !px-2 !py-2 !text-[11px] sm:!px-4 sm:!py-3 sm:!text-sm")}
-          >
-            <span className="sm:hidden">Enquire</span>
-            <span className="hidden sm:inline">Enquire now</span>
-          </Link>
+          <EnquireNowButton packageSlug={pkg.slug} packageTitle={pkg.title} />
         </div>
       </div>
     </article>

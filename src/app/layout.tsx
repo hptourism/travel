@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
+import { EnquiryModalProvider } from "@/components/forms/EnquiryModal";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { FloatingContacts } from "@/components/layout/FloatingContacts";
@@ -40,12 +41,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <Header />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
-        <FloatingContacts />
+        <EnquiryModalProvider>
+          <Header />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+          <FloatingContacts />
+        </EnquiryModalProvider>
       </body>
     </html>
   );

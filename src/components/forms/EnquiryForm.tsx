@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
 import { packageOptions } from "@/data/packages";
 import { site, whatsappLink } from "@/lib/site";
@@ -15,6 +15,7 @@ type EnquiryFormProps = {
   variant?: Variant;
   surface?: Surface;
   defaultPackage?: string;
+  source?: string;
 };
 
 const fieldClass =
@@ -28,7 +29,9 @@ function EnquiryFormFields({
   variant = "full",
   surface = "card",
   defaultPackage,
+  source,
 }: EnquiryFormProps) {
+  const pathname = usePathname();
   const params = useSearchParams();
   const preset = defaultPackage || params.get("package") || "";
   const presetTitle =
@@ -65,6 +68,8 @@ function EnquiryFormFields({
           dates: data.get("dates"),
           details: data.get("details"),
           company: data.get("company"),
+          page: `${window.location.pathname}${window.location.search}`,
+          source: source || `Enquiry form · ${pathname}`,
         }),
       });
       const payload = (await response.json().catch(() => null)) as

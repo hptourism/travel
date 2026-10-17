@@ -12,7 +12,7 @@ export function FloatingContacts() {
   const phone = phoneLink();
 
   return (
-    <div className="fixed bottom-5 right-4 z-30 flex flex-col items-end gap-3 sm:right-6">
+    <div className="fixed bottom-5 right-[calc(1rem+var(--scrollbar-compensation,0px))] z-30 flex flex-col items-end gap-3 sm:right-[calc(1.5rem+var(--scrollbar-compensation,0px))]">
       <FloatingEnquiry />
       {phone ? (
         <a href={phone} aria-label="Call us" className={`${iconButton} bg-forest hover:bg-pine`}>

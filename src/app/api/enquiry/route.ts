@@ -45,6 +45,8 @@ export async function POST(request: Request) {
   const travellers = clean(body.travellers, 60);
   const dates = clean(body.dates, 80);
   const details = clean(body.details, 800);
+  const page = clean(body.page, 200);
+  const source = clean(body.source, 160);
   const phoneDigits = digits(phone);
 
   if (name.length < 2) {
@@ -99,6 +101,8 @@ export async function POST(request: Request) {
     travellers ? `Travellers: ${travellers}` : null,
     dates ? `Dates: ${dates}` : null,
     `Details: ${details}`,
+    source ? `Source: ${source}` : null,
+    page ? `Page: ${page}` : null,
     `Received: ${when}`,
   ].filter(Boolean);
 
