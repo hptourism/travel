@@ -83,7 +83,7 @@ export default function ContactPage() {
             <article className="rounded-3xl bg-pine p-6 text-white">
               <h2 className="font-serif text-2xl">Visit / get directions</h2>
               <p className="mt-2 text-sm leading-relaxed text-white/75">
-                The corporate office is at NSP and the taxi fleet is based at PU Block, Pitampura.
+                The corporate office is at NSP 
               </p>
               <div className="mt-5 flex flex-col gap-3">
                 {site.officeMapsUrl ? (
