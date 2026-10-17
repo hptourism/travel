@@ -80,3 +80,19 @@ export function IconWhatsApp(props: IconProps) {
     </svg>
   );
 }
+
+export function IconMessage(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M4.5 6.5A2.5 2.5 0 0 1 7 4h10a2.5 2.5 0 0 1 2.5 2.5v8A2.5 2.5 0 0 1 17 17H9l-4.5 3v-3.5A2.5 2.5 0 0 1 4.5 14.5v-8Z" />
+    </svg>
+  );
+}
+
+export function IconClose(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M6 6l12 12M18 6 6 18" />
+    </svg>
+  );
+}

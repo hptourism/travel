@@ -7,11 +7,13 @@ import { site, whatsappLink } from "@/lib/site";
 import { buttonClass } from "@/lib/styles";
 
 type Variant = "compact" | "full";
+type Surface = "card" | "plain";
 
 type EnquiryFormProps = {
   title: string;
   subtitle: string;
   variant?: Variant;
+  surface?: Surface;
   defaultPackage?: string;
 };
 
@@ -24,6 +26,7 @@ function EnquiryFormFields({
   title,
   subtitle,
   variant = "full",
+  surface = "card",
   defaultPackage,
 }: EnquiryFormProps) {
   const params = useSearchParams();
@@ -85,13 +88,24 @@ function EnquiryFormFields({
 
   const whatsapp = whatsappLink("Hello, I would like to enquire about a Himachal tour.");
 
+  const shell =
+    surface === "plain"
+      ? "relative text-ink"
+      : "relative rounded-3xl border border-white/60 bg-paper p-5 text-ink shadow-[0_20px_60px_rgba(0,20,12,0.18)] sm:p-6";
+
   return (
-    <div className="relative rounded-3xl border border-white/60 bg-paper p-5 text-ink shadow-[0_20px_60px_rgba(0,20,12,0.18)] sm:p-6">
-      <h2 className="font-serif text-2xl text-pine">{title}</h2>
-      <p className="mt-1 text-sm leading-relaxed text-muted">{subtitle}</p>
+    <div className={shell}>
+      {surface === "card" ? (
+        <>
+          <h2 className="font-serif text-2xl text-pine">{title}</h2>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{subtitle}</p>
+        </>
+      ) : (
+        <p className="text-sm leading-relaxed text-muted">{subtitle}</p>
+      )}
 
       {status === "success" ? (
-        <div className="mt-5 rounded-2xl bg-mint p-4" role="status">
+        <div className={`${surface === "plain" ? "mt-4" : "mt-5"} rounded-2xl bg-mint p-4`} role="status">
           <p className="font-semibold text-pine">Enquiry sent.</p>
           <p className="mt-1 text-sm leading-relaxed text-muted">
             Our team has the details and will get back to you.
@@ -108,7 +122,7 @@ function EnquiryFormFields({
           </button>
         </div>
       ) : (
-        <form className="mt-5" onSubmit={onSubmit}>
+        <form className={surface === "plain" ? "mt-4" : "mt-5"} onSubmit={onSubmit}>
           <div className="pointer-events-none absolute h-0 w-0 overflow-hidden" aria-hidden="true">
             <label htmlFor="company">Company</label>
             <input id="company" name="company" tabIndex={-1} autoComplete="off" />

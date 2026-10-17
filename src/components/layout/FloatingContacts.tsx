@@ -1,3 +1,4 @@
+import { FloatingEnquiry } from "@/components/layout/FloatingEnquiry";
 import { IconPhone, IconWhatsApp } from "@/components/ui/Icons";
 import { phoneLink, whatsappLink } from "@/lib/site";
 
@@ -10,10 +11,9 @@ export function FloatingContacts() {
   );
   const phone = phoneLink();
 
-  if (!whatsapp && !phone) return null;
-
   return (
-    <div className="fixed bottom-5 right-4 z-30 flex flex-col gap-3 sm:right-6">
+    <div className="fixed bottom-5 right-4 z-30 flex flex-col items-end gap-3 sm:right-6">
+      <FloatingEnquiry />
       {phone ? (
         <a href={phone} aria-label="Call us" className={`${iconButton} bg-forest hover:bg-pine`}>
           <IconPhone className="h-6 w-6" strokeWidth={2} />
