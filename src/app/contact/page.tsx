@@ -96,16 +96,7 @@ export default function ContactPage() {
                     Open NSP office map
                   </a>
                 ) : null}
-                {site.fleetMapsUrl ? (
-                  <a
-                    className={buttonClass("light", "w-full")}
-                    href={site.fleetMapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Open fleet stand map
-                  </a>
-                ) : null}
+              
               </div>
             </article>
           </div>
