@@ -27,9 +27,18 @@ export function formatContactNumber(raw: string) {
   return raw.trim();
 }
 
+function whatsappDigits(raw: string) {
+  let digits = raw.replace(/\D/g, "");
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  if (digits.length === 11 && digits.startsWith("0")) digits = digits.slice(1);
+  if (digits.length === 10) digits = `91${digits}`;
+  return digits;
+}
+
 export function whatsappLink(message?: string) {
-  if (!site.whatsapp) return null;
-  const base = `https://wa.me/${site.whatsapp}`;
+  const number = whatsappDigits(site.whatsapp);
+  if (!number) return null;
+  const base = `https://wa.me/${number}`;
   if (!message) return base;
   return `${base}?text=${encodeURIComponent(message)}`;
 }
