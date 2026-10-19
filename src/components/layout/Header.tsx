@@ -24,7 +24,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="sticky top-0 z-40 pr-[var(--scrollbar-compensation,0px)]">
+    <div className="sticky top-0 z-40">
       <div className="bg-pine text-[12px] text-white/80">
         <div
           className={`${container} flex flex-col gap-1 py-2 sm:flex-row sm:items-center sm:justify-between`}

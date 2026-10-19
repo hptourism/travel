@@ -31,16 +31,15 @@ const AUTO_POPUP_SESSION_KEY = "enquiry-auto-popup-shown";
 const EXIT_MS = 320;
 
 function lockBodyScroll() {
+  // Measure before overflow:hidden so the gap matches the disappearing scrollbar.
   const scrollbar = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
   document.documentElement.style.setProperty("--scrollbar-compensation", `${scrollbar}px`);
-  document.body.style.overflow = "hidden";
-  document.body.style.paddingRight = `${scrollbar}px`;
+  document.documentElement.classList.add("enquiry-scroll-lock");
 }
 
 function unlockBodyScroll() {
-  document.documentElement.style.removeProperty("--scrollbar-compensation");
-  document.body.style.overflow = "";
-  document.body.style.paddingRight = "";
+  document.documentElement.classList.remove("enquiry-scroll-lock");
+  document.documentElement.style.setProperty("--scrollbar-compensation", "0px");
 }
 
 export function EnquiryModalProvider({ children }: { children: ReactNode }) {
@@ -52,6 +51,7 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const openRef = useRef(false);
+  const openEnquiryRef = useRef<(options?: OpenOptions) => void>(() => {});
 
   const clearExitTimer = useCallback(() => {
     if (exitTimerRef.current) {
@@ -66,6 +66,7 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
     exitTimerRef.current = setTimeout(() => {
       setMounted(false);
       openRef.current = false;
+      unlockBodyScroll();
       exitTimerRef.current = null;
     }, EXIT_MS);
   }, [clearExitTimer]);
@@ -75,6 +76,8 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
       clearExitTimer();
       setPackageSlug(options?.packageSlug);
       setSource(options?.source || "Floating enquiry button");
+      // Lock synchronously before paint so the page does not jump when the modal mounts.
+      lockBodyScroll();
       setMounted(true);
       openRef.current = true;
       // Double rAF so the browser paints the closed state before entering.
@@ -85,17 +88,18 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
     [clearExitTimer],
   );
 
+  openEnquiryRef.current = openEnquiry;
+
   useEffect(() => {
-    return () => clearExitTimer();
+    return () => {
+      clearExitTimer();
+      unlockBodyScroll();
+    };
   }, [clearExitTimer]);
 
   useEffect(() => {
-    if (!mounted) {
-      unlockBodyScroll();
-      return;
-    }
+    if (!mounted) return;
 
-    lockBodyScroll();
     if (entered) closeRef.current?.focus();
 
     function onKey(event: KeyboardEvent) {
@@ -103,10 +107,7 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
     }
 
     window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      if (!openRef.current) unlockBodyScroll();
-    };
+    return () => window.removeEventListener("keydown", onKey);
   }, [mounted, entered, closeEnquiry]);
 
   useEffect(() => {
@@ -126,11 +127,12 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
       } catch {
         // ignore
       }
-      openEnquiry({ source: "Auto popup" });
+      openEnquiryRef.current({ source: "Auto popup" });
     }, delayMs);
 
     return () => window.clearTimeout(timer);
-  }, [openEnquiry]);
+    // Run once on mount so the delay is not reset by callback identity changes.
+  }, []);
 
   const value = useMemo(
     () => ({ openEnquiry, closeEnquiry }),

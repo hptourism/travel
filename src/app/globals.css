@@ -27,12 +27,23 @@
 
 html {
   scroll-behavior: smooth;
+  /* Keep scrollbar space reserved so modal open/close does not shift the layout. */
+  scrollbar-gutter: stable;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+html.enquiry-scroll-lock,
+html.enquiry-scroll-lock body {
+  overflow: hidden;
+}
+
+html.enquiry-scroll-lock body {
+  padding-right: var(--scrollbar-compensation, 0px);
 }
 
 ::selection {

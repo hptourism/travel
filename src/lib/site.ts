@@ -10,8 +10,11 @@ function readFlag(name: string, fallback = false) {
 }
 
 function readPositiveNumber(name: string, fallback: number) {
-  const parsed = Number(read(name));
-  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+  const raw = read(name);
+  if (!raw) return fallback;
+  const parsed = Number(raw);
+  // Require a positive value so empty/"0" does not become an instant popup.
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
 export const site = {
