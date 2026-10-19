@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TrackLink } from "@/components/analytics/TrackLink";
 import { EnquiryForm } from "@/components/forms/EnquiryForm";
 import { IconMail, IconPhone, IconPin, IconWhatsApp } from "@/components/ui/Icons";
 import { PageHeader } from "@/components/ui/SectionHeading";
@@ -51,9 +52,14 @@ export default function ContactPage() {
                     <IconPhone className="mt-0.5 h-5 w-5 shrink-0 text-forest" />
                     <span>
                       <span className="block font-semibold text-ink">Phone</span>
-                      <a className="text-forest underline" href={phone}>
+                      <TrackLink
+                        className="text-forest underline"
+                        href={phone}
+                        trackEvent="call_click"
+                        trackLocation="contact_page"
+                      >
                         {formatContactNumber(site.phone)}
-                      </a>
+                      </TrackLink>
                     </span>
                   </li>
                 ) : null}
@@ -62,9 +68,16 @@ export default function ContactPage() {
                     <IconWhatsApp className="mt-0.5 h-5 w-5 shrink-0 text-forest" />
                     <span>
                       <span className="block font-semibold text-ink">WhatsApp</span>
-                      <a className="text-forest underline" href={whatsapp} target="_blank" rel="noopener noreferrer">
+                      <TrackLink
+                        className="text-forest underline"
+                        href={whatsapp}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        trackEvent="whatsapp_click"
+                        trackLocation="contact_page"
+                      >
                         {formatContactNumber(site.whatsapp)}
-                      </a>
+                      </TrackLink>
                     </span>
                   </li>
                 ) : null}

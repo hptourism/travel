@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Fraunces, Outfit } from "next/font/google";
 import { EnquiryModalProvider } from "@/components/forms/EnquiryModal";
 import { Footer } from "@/components/layout/Footer";
@@ -6,6 +7,8 @@ import { Header } from "@/components/layout/Header";
 import { FloatingContacts } from "@/components/layout/FloatingContacts";
 import { site } from "@/lib/site";
 import "./globals.css";
+
+const gtmId = (process.env.NEXT_PUBLIC_GTM_ID ?? "").trim();
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -34,6 +37,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${outfit.variable} ${fraunces.variable} h-full antialiased`}>
+      {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <body className="flex min-h-full flex-col overflow-x-hidden bg-cream font-sans text-ink">
         <a
           href="#main"

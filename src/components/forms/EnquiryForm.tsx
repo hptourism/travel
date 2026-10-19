@@ -2,7 +2,9 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
+import { TrackLink } from "@/components/analytics/TrackLink";
 import { packageOptions } from "@/data/packages";
+import { gtmEvents, trackGtmEvent } from "@/lib/gtm";
 import { site, whatsappLink } from "@/lib/site";
 import { buttonClass } from "@/lib/styles";
 
@@ -85,6 +87,9 @@ function EnquiryFormFields({
       form.reset();
       setPackageName("");
       setStatus("success");
+      trackGtmEvent(gtmEvents.formSubmit, {
+        location: source || `Enquiry form · ${pathname}`,
+      });
     } catch {
       setStatus("error");
       setError("Network error. Please try again.");
@@ -231,9 +236,16 @@ function EnquiryFormFields({
               <>
                 {" "}
                 Prefer chat?{" "}
-                <a className="font-semibold text-forest underline" href={whatsapp} target="_blank" rel="noopener noreferrer">
+                <TrackLink
+                  className="font-semibold text-forest underline"
+                  href={whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  trackEvent="whatsapp_click"
+                  trackLocation="enquiry_form"
+                >
                   Message us on WhatsApp
-                </a>
+                </TrackLink>
                 .
               </>
             ) : null}

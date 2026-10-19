@@ -1,3 +1,4 @@
+import { TrackLink } from "@/components/analytics/TrackLink";
 import { FloatingEnquiry } from "@/components/layout/FloatingEnquiry";
 import { IconPhone, IconWhatsApp } from "@/components/ui/Icons";
 import { phoneLink, whatsappLink } from "@/lib/site";
@@ -15,20 +16,28 @@ export function FloatingContacts() {
     <div className="fixed bottom-5 right-[calc(1rem+var(--scrollbar-compensation,0px))] z-30 flex flex-col items-end gap-3 sm:right-[calc(1.5rem+var(--scrollbar-compensation,0px))]">
       <FloatingEnquiry />
       {phone ? (
-        <a href={phone} aria-label="Call us" className={`${iconButton} bg-forest hover:bg-pine`}>
+        <TrackLink
+          href={phone}
+          aria-label="Call us"
+          className={`${iconButton} bg-forest hover:bg-pine`}
+          trackEvent="call_click"
+          trackLocation="floating"
+        >
           <IconPhone className="h-6 w-6" strokeWidth={2} />
-        </a>
+        </TrackLink>
       ) : null}
       {whatsapp ? (
-        <a
+        <TrackLink
           href={whatsapp}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat on WhatsApp"
           className={`${iconButton} bg-[#25D366] hover:bg-[#1ebe5d]`}
+          trackEvent="whatsapp_click"
+          trackLocation="floating"
         >
           <IconWhatsApp className="h-7 w-7" />
-        </a>
+        </TrackLink>
       ) : null}
     </div>
   );
