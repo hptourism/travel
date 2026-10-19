@@ -1,8 +1,8 @@
 "use client";
 
-import { sendGAEvent } from "@next/third-parties/google";
+import { sendGTMEvent } from "@next/third-parties/google";
 
-const gaId = (process.env.NEXT_PUBLIC_GTM_ID ?? "").trim();
+const gtmId = (process.env.NEXT_PUBLIC_GTM_ID ?? "").trim();
 
 export const gtmEvents = {
   whatsappClick: "whatsapp_click",
@@ -16,7 +16,10 @@ export function trackGtmEvent(
   event: GtmEventName,
   params?: Record<string, string | number | boolean | undefined>,
 ) {
-  if (!gaId) return;
+  if (!gtmId) return;
 
-  sendGAEvent("event", event, params ?? {});
+  sendGTMEvent({
+    event,
+    ...params,
+  });
 }

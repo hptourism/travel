@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Fraunces, Outfit } from "next/font/google";
 import { EnquiryModalProvider } from "@/components/forms/EnquiryModal";
 import { Footer } from "@/components/layout/Footer";
@@ -8,8 +8,7 @@ import { FloatingContacts } from "@/components/layout/FloatingContacts";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-// GA4 measurement ID (G-XXXXXXX). Env key kept as NEXT_PUBLIC_GTM_ID for existing Vercel setup.
-const gaId = (process.env.NEXT_PUBLIC_GTM_ID ?? "").trim();
+const gtmId = (process.env.NEXT_PUBLIC_GTM_ID ?? "").trim();
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -38,8 +37,19 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${outfit.variable} ${fraunces.variable} h-full antialiased`}>
-      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
+      {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <body className="flex min-h-full flex-col overflow-x-hidden bg-cream font-sans text-ink">
+        {gtmId ? (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+              title="Google Tag Manager"
+            />
+          </noscript>
+        ) : null}
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2"
