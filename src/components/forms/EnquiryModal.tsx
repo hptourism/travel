@@ -13,6 +13,7 @@ import {
 } from "react";
 import { EnquiryForm } from "@/components/forms/EnquiryForm";
 import { IconClose } from "@/components/ui/Icons";
+import { site } from "@/lib/site";
 
 type OpenOptions = {
   packageSlug?: string;
@@ -25,6 +26,9 @@ type EnquiryModalContextValue = {
 };
 
 const EnquiryModalContext = createContext<EnquiryModalContextValue | null>(null);
+
+const AUTO_POPUP_SESSION_KEY = "enquiry-auto-popup-shown";
+const EXIT_MS = 320;
 
 function lockBodyScroll() {
   const scrollbar = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
@@ -40,25 +44,59 @@ function unlockBodyScroll() {
 }
 
 export function EnquiryModalProvider({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [entered, setEntered] = useState(false);
   const [packageSlug, setPackageSlug] = useState<string | undefined>();
   const [source, setSource] = useState("Floating enquiry button");
   const titleId = useId();
   const closeRef = useRef<HTMLButtonElement>(null);
+  const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const openRef = useRef(false);
 
-  const closeEnquiry = useCallback(() => setOpen(false), []);
-
-  const openEnquiry = useCallback((options?: OpenOptions) => {
-    setPackageSlug(options?.packageSlug);
-    setSource(options?.source || "Floating enquiry button");
-    setOpen(true);
+  const clearExitTimer = useCallback(() => {
+    if (exitTimerRef.current) {
+      clearTimeout(exitTimerRef.current);
+      exitTimerRef.current = null;
+    }
   }, []);
 
+  const closeEnquiry = useCallback(() => {
+    setEntered(false);
+    clearExitTimer();
+    exitTimerRef.current = setTimeout(() => {
+      setMounted(false);
+      openRef.current = false;
+      exitTimerRef.current = null;
+    }, EXIT_MS);
+  }, [clearExitTimer]);
+
+  const openEnquiry = useCallback(
+    (options?: OpenOptions) => {
+      clearExitTimer();
+      setPackageSlug(options?.packageSlug);
+      setSource(options?.source || "Floating enquiry button");
+      setMounted(true);
+      openRef.current = true;
+      // Double rAF so the browser paints the closed state before entering.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setEntered(true));
+      });
+    },
+    [clearExitTimer],
+  );
+
   useEffect(() => {
-    if (!open) return;
+    return () => clearExitTimer();
+  }, [clearExitTimer]);
+
+  useEffect(() => {
+    if (!mounted) {
+      unlockBodyScroll();
+      return;
+    }
 
     lockBodyScroll();
-    closeRef.current?.focus();
+    if (entered) closeRef.current?.focus();
 
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") closeEnquiry();
@@ -66,10 +104,33 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
 
     window.addEventListener("keydown", onKey);
     return () => {
-      unlockBodyScroll();
       window.removeEventListener("keydown", onKey);
+      if (!openRef.current) unlockBodyScroll();
     };
-  }, [open, closeEnquiry]);
+  }, [mounted, entered, closeEnquiry]);
+
+  useEffect(() => {
+    if (!site.enquiryAutoPopup) return;
+
+    try {
+      if (sessionStorage.getItem(AUTO_POPUP_SESSION_KEY) === "1") return;
+    } catch {
+      // sessionStorage may be blocked; still allow auto popup once this page load.
+    }
+
+    const delayMs = Math.round(site.enquiryAutoPopupSeconds * 1000);
+    const timer = window.setTimeout(() => {
+      if (openRef.current) return;
+      try {
+        sessionStorage.setItem(AUTO_POPUP_SESSION_KEY, "1");
+      } catch {
+        // ignore
+      }
+      openEnquiry({ source: "Auto popup" });
+    }, delayMs);
+
+    return () => window.clearTimeout(timer);
+  }, [openEnquiry]);
 
   const value = useMemo(
     () => ({ openEnquiry, closeEnquiry }),
@@ -79,19 +140,23 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
   return (
     <EnquiryModalContext.Provider value={value}>
       {children}
-      {open ? (
-        <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
+      {mounted ? (
+        <div
+          className={`enquiry-modal fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4 ${
+            entered ? "enquiry-modal--open" : ""
+          }`}
+        >
           <button
             type="button"
             aria-label="Close enquiry form"
-            className="absolute inset-0 bg-pine-deep/55 backdrop-blur-[2px]"
+            className="enquiry-modal__backdrop absolute inset-0 bg-pine-deep/55 backdrop-blur-[2px]"
             onClick={closeEnquiry}
           />
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="relative z-10 flex max-h-[min(92vh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-line bg-paper shadow-[0_24px_80px_rgba(0,20,12,0.35)] sm:rounded-3xl"
+            className="enquiry-modal__panel relative z-10 flex max-h-[min(92vh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-line bg-paper shadow-[0_24px_80px_rgba(0,20,12,0.35)] sm:rounded-3xl"
           >
             <div className="flex items-start justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
               <div>

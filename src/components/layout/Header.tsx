@@ -29,7 +29,7 @@ export function Header() {
         <div
           className={`${container} flex flex-col gap-1 py-2 sm:flex-row sm:items-center sm:justify-between`}
         >
-          {site.fleetStand ? <p>Taxi fleet stand: {site.fleetStand}</p> : <span />}
+          {site.fleetStand ? <p>Taxi fleet stand: {site.fleetStand}</p> : null}
           {site.officeShort ? <p>Corporate office: {site.officeShort}</p> : null}
         </div>
       </div>

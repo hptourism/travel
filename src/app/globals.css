@@ -48,3 +48,40 @@ textarea:focus-visible {
   outline: 2px solid #146b43;
   outline-offset: 2px;
 }
+
+/* Enquiry modal — soft enter/exit on mobile + desktop */
+.enquiry-modal__backdrop {
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+
+.enquiry-modal__panel {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0) scale(0.98);
+  transition:
+    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+@media (max-width: 639px) {
+  .enquiry-modal__panel {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+.enquiry-modal--open .enquiry-modal__backdrop {
+  opacity: 1;
+}
+
+.enquiry-modal--open .enquiry-modal__panel {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enquiry-modal__backdrop,
+  .enquiry-modal__panel {
+    transition: none;
+  }
+}

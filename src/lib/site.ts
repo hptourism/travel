@@ -2,6 +2,18 @@ function read(name: string) {
   return (process.env[name] ?? "").trim();
 }
 
+function readFlag(name: string, fallback = false) {
+  const value = read(name).toLowerCase();
+  if (["1", "true", "on", "yes"].includes(value)) return true;
+  if (["0", "false", "off", "no"].includes(value)) return false;
+  return fallback;
+}
+
+function readPositiveNumber(name: string, fallback: number) {
+  const parsed = Number(read(name));
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
 export const site = {
   name: read("NEXT_PUBLIC_SITE_NAME"),
   shortName: read("NEXT_PUBLIC_SITE_SHORT"),
@@ -14,6 +26,10 @@ export const site = {
   officeMapsUrl: read("NEXT_PUBLIC_OFFICE_MAPS_URL"),
   fleetMapsUrl: read("NEXT_PUBLIC_FLEET_MAPS_URL"),
   siteUrl: read("NEXT_PUBLIC_SITE_URL"),
+  /** Auto-open enquiry modal. Set NEXT_PUBLIC_ENQUIRY_AUTO_POPUP=off to disable. */
+  enquiryAutoPopup: readFlag("NEXT_PUBLIC_ENQUIRY_AUTO_POPUP", true),
+  /** Delay in seconds before auto popup. */
+  enquiryAutoPopupSeconds: readPositiveNumber("NEXT_PUBLIC_ENQUIRY_AUTO_POPUP_SECONDS", 10),
 };
 
 export function formatContactNumber(raw: string) {
