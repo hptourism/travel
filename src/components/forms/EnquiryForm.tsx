@@ -84,11 +84,26 @@ function EnquiryFormFields({
         return;
       }
 
+      const field = (key: string) => {
+        const value = data.get(key);
+        return typeof value === "string" ? value.trim() : "";
+      };
+
+      const fullName = field("name");
+      const [firstName = "", ...restName] = fullName.split(/\s+/);
+      const lastName = restName.join(" ");
+
       form.reset();
       setPackageName("");
       setStatus("success");
       trackGtmEvent(gtmEvents.formSubmit, {
-        location: source || `Enquiry form · ${pathname}`,
+        user_data: {
+          phone_number: field("phone"),
+          address: {
+            first_name: firstName,
+            last_name: lastName,
+          },
+        },
       });
     } catch {
       setStatus("error");
@@ -116,7 +131,7 @@ function EnquiryFormFields({
 
       {status === "success" ? (
         <div className={`${surface === "plain" ? "mt-4" : "mt-5"} rounded-2xl bg-mint p-4`} role="status">
-          <p className="font-semibold text-pine">Enquiry sent.</p>
+          <p className="font-semibold text-pine">Successful</p>
           <p className="mt-1 text-sm leading-relaxed text-muted">
             Our team has the details and will get back to you.
           </p>

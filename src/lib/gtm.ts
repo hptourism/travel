@@ -12,9 +12,16 @@ export const gtmEvents = {
 
 type GtmEventName = (typeof gtmEvents)[keyof typeof gtmEvents];
 
+type GtmParamValue =
+  | string
+  | number
+  | boolean
+  | undefined
+  | { [key: string]: GtmParamValue };
+
 export function trackGtmEvent(
   event: GtmEventName,
-  params?: Record<string, string | number | boolean | undefined>,
+  params?: Record<string, GtmParamValue>,
 ) {
   if (!gtmId) return;
 
