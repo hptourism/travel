@@ -96,18 +96,15 @@ function EnquiryFormFields({
       form.reset();
       setPackageName("");
       setStatus("success");
-      // Push after success UI mounts so Custom Event + Element Visibility both can catch it
-      queueMicrotask(() => {
-        trackGtmEvent(gtmEvents.formSubmit, {
-          location: source || `Enquiry form · ${pathname}`,
-          user_data: {
-            phone_number: field("phone"),
-            address: {
-              first_name: firstName,
-              last_name: lastName,
-            },
+      trackGtmEvent(gtmEvents.formSubmit, {
+        location: source || `Enquiry form · ${pathname}`,
+        user_data: {
+          phone_number: field("phone"),
+          address: {
+            first_name: firstName,
+            last_name: lastName,
           },
-        });
+        },
       });
     } catch {
       setStatus("error");
@@ -140,7 +137,9 @@ function EnquiryFormFields({
           role="status"
           data-gtm-success="true"
         >
-          <p className="font-semibold text-pine">Successful</p>
+          <p id="enquiry-success-text" className="font-semibold text-pine">
+            Successful
+          </p>
           <p className="mt-1 text-sm leading-relaxed text-muted">
             Our team has the details and will get back to you.
           </p>
