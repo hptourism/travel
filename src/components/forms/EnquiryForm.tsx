@@ -96,14 +96,18 @@ function EnquiryFormFields({
       form.reset();
       setPackageName("");
       setStatus("success");
-      trackGtmEvent(gtmEvents.formSubmit, {
-        user_data: {
-          phone_number: field("phone"),
-          address: {
-            first_name: firstName,
-            last_name: lastName,
+      // Push after success UI mounts so Custom Event + Element Visibility both can catch it
+      queueMicrotask(() => {
+        trackGtmEvent(gtmEvents.formSubmit, {
+          location: source || `Enquiry form · ${pathname}`,
+          user_data: {
+            phone_number: field("phone"),
+            address: {
+              first_name: firstName,
+              last_name: lastName,
+            },
           },
-        },
+        });
       });
     } catch {
       setStatus("error");
@@ -130,7 +134,12 @@ function EnquiryFormFields({
       )}
 
       {status === "success" ? (
-        <div className={`${surface === "plain" ? "mt-4" : "mt-5"} rounded-2xl bg-mint p-4`} role="status">
+        <div
+          id="enquiry-form-success"
+          className={`${surface === "plain" ? "mt-4" : "mt-5"} rounded-2xl bg-mint p-4`}
+          role="status"
+          data-gtm-success="true"
+        >
           <p className="font-semibold text-pine">Successful</p>
           <p className="mt-1 text-sm leading-relaxed text-muted">
             Our team has the details and will get back to you.
