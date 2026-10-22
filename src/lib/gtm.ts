@@ -5,7 +5,8 @@ const gtmId = (process.env.NEXT_PUBLIC_GTM_ID ?? "").trim();
 export const gtmEvents = {
   whatsappClick: "whatsapp_click",
   callClick: "call_click",
-  formSubmit: "Successful",
+  // Must match GTM trigger exactly (their spelling: Sucessfull).
+  formSubmit: "Sucessfull",
 } as const;
 
 type GtmEventName = (typeof gtmEvents)[keyof typeof gtmEvents];
