@@ -13,6 +13,11 @@ import {
 } from "react";
 import { EnquiryForm } from "@/components/forms/EnquiryForm";
 import { IconClose } from "@/components/ui/Icons";
+import {
+  isEnquiryAutoPopupSuppressed,
+  markEnquiryAutoPopupShown,
+  wasEnquiryAutoPopupShown,
+} from "@/lib/enquiry-auto-popup";
 import { site } from "@/lib/site";
 
 type OpenOptions = {
@@ -27,19 +32,25 @@ type EnquiryModalContextValue = {
 
 const EnquiryModalContext = createContext<EnquiryModalContextValue | null>(null);
 
-const AUTO_POPUP_SESSION_KEY = "enquiry-auto-popup-shown";
 const EXIT_MS = 320;
 
+function getScrollbarWidth() {
+  return Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+}
+
 function lockBodyScroll() {
-  // Measure before overflow:hidden so the gap matches the disappearing scrollbar.
-  const scrollbar = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
-  document.documentElement.style.setProperty("--scrollbar-compensation", `${scrollbar}px`);
-  document.documentElement.classList.add("enquiry-scroll-lock");
+  // Measure while the scrollbar is still visible, then reserve that width as
+  // padding so overflow:hidden does not shrink the layout.
+  const scrollbar = getScrollbarWidth();
+  const root = document.documentElement;
+  root.style.setProperty("--scrollbar-compensation", `${scrollbar}px`);
+  root.classList.add("enquiry-scroll-lock");
 }
 
 function unlockBodyScroll() {
-  document.documentElement.classList.remove("enquiry-scroll-lock");
-  document.documentElement.style.setProperty("--scrollbar-compensation", "0px");
+  const root = document.documentElement;
+  root.classList.remove("enquiry-scroll-lock");
+  root.style.removeProperty("--scrollbar-compensation");
 }
 
 export function EnquiryModalProvider({ children }: { children: ReactNode }) {
@@ -112,21 +123,14 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!site.enquiryAutoPopup) return;
-
-    try {
-      if (sessionStorage.getItem(AUTO_POPUP_SESSION_KEY) === "1") return;
-    } catch {
-      // sessionStorage may be blocked; still allow auto popup once this page load.
-    }
+    // Already shown this session, or hero form was used before remount.
+    if (wasEnquiryAutoPopupShown()) return;
 
     const delayMs = Math.round(site.enquiryAutoPopupSeconds * 1000);
     const timer = window.setTimeout(() => {
-      if (openRef.current) return;
-      try {
-        sessionStorage.setItem(AUTO_POPUP_SESSION_KEY, "1");
-      } catch {
-        // ignore
-      }
+      // Skip if user already engaged with the on-page hero form, or modal is open.
+      if (isEnquiryAutoPopupSuppressed() || openRef.current) return;
+      markEnquiryAutoPopupShown();
       openEnquiryRef.current({ source: "Auto popup" });
     }, delayMs);
 

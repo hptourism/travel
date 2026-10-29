@@ -4,6 +4,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
 import { TrackLink } from "@/components/analytics/TrackLink";
 import { packageOptions } from "@/data/packages";
+import { suppressEnquiryAutoPopup } from "@/lib/enquiry-auto-popup";
 import { gtmEvents, trackGtmEvent } from "@/lib/gtm";
 import { site, whatsappLink } from "@/lib/site";
 import { buttonClass } from "@/lib/styles";
@@ -18,6 +19,8 @@ type EnquiryFormProps = {
   surface?: Surface;
   defaultPackage?: string;
   source?: string;
+  /** When true, interacting with this form cancels the delayed enquiry popup. */
+  cancelAutoPopupOnInteract?: boolean;
 };
 
 const fieldClass =
@@ -32,6 +35,7 @@ function EnquiryFormFields({
   surface = "card",
   defaultPackage,
   source,
+  cancelAutoPopupOnInteract = false,
 }: EnquiryFormProps) {
   const pathname = usePathname();
   const params = useSearchParams();
@@ -43,6 +47,10 @@ function EnquiryFormFields({
   const [seenPreset, setSeenPreset] = useState(presetTitle);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
+
+  function onHeroEngage() {
+    if (cancelAutoPopupOnInteract) suppressEnquiryAutoPopup();
+  }
 
   if (presetTitle !== seenPreset) {
     setSeenPreset(presetTitle);
@@ -120,7 +128,11 @@ function EnquiryFormFields({
       : "relative rounded-3xl border border-white/60 bg-paper p-5 text-ink shadow-[0_20px_60px_rgba(0,20,12,0.18)] sm:p-6";
 
   return (
-    <div className={shell}>
+    <div
+      className={shell}
+      onPointerDownCapture={cancelAutoPopupOnInteract ? onHeroEngage : undefined}
+      onFocusCapture={cancelAutoPopupOnInteract ? onHeroEngage : undefined}
+    >
       {surface === "card" ? (
         <>
           <h2 className="font-serif text-2xl text-pine">{title}</h2>

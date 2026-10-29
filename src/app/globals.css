@@ -27,8 +27,6 @@
 
 html {
   scroll-behavior: smooth;
-  /* Keep scrollbar space reserved so modal open/close does not shift the layout. */
-  scrollbar-gutter: stable;
 }
 
 body {
@@ -37,13 +35,23 @@ body {
   font-family: var(--font-sans);
 }
 
-html.enquiry-scroll-lock,
-html.enquiry-scroll-lock body {
+/*
+  Modal open: hide the page scrollbar without shifting layout.
+  Padding on html keeps document width stable; fixed overlays inset by the
+  same amount so they stay aligned with the page (not the bare viewport).
+*/
+html.enquiry-scroll-lock {
   overflow: hidden;
+  padding-right: var(--scrollbar-compensation, 0px);
 }
 
 html.enquiry-scroll-lock body {
-  padding-right: var(--scrollbar-compensation, 0px);
+  overflow: hidden;
+  overflow-x: hidden;
+}
+
+html.enquiry-scroll-lock .enquiry-modal {
+  right: var(--scrollbar-compensation, 0px);
 }
 
 ::selection {

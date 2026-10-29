@@ -60,6 +60,7 @@ export default function HomePage() {
           <EnquiryForm
             variant="compact"
             source="Home page hero form"
+            cancelAutoPopupOnInteract
             title="Plan your Himachal trip"
             subtitle="Send your requirement and our team will prepare the right package."
           />
