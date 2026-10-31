@@ -19,7 +19,7 @@ type EnquiryFormProps = {
   surface?: Surface;
   defaultPackage?: string;
   source?: string;
-  /** When true, interacting with this form cancels the delayed enquiry popup. */
+  /** When true, typing in an input cancels the delayed enquiry popup. */
   cancelAutoPopupOnInteract?: boolean;
 };
 
@@ -48,8 +48,10 @@ function EnquiryFormFields({
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
 
-  function onHeroEngage() {
-    if (cancelAutoPopupOnInteract) suppressEnquiryAutoPopup();
+  function onHeroInputType(event: FormEvent<HTMLDivElement>) {
+    if (!cancelAutoPopupOnInteract) return;
+    if (!(event.target instanceof HTMLInputElement)) return;
+    suppressEnquiryAutoPopup();
   }
 
   if (presetTitle !== seenPreset) {
@@ -130,8 +132,7 @@ function EnquiryFormFields({
   return (
     <div
       className={shell}
-      onPointerDownCapture={cancelAutoPopupOnInteract ? onHeroEngage : undefined}
-      onFocusCapture={cancelAutoPopupOnInteract ? onHeroEngage : undefined}
+      onInputCapture={cancelAutoPopupOnInteract ? onHeroInputType : undefined}
     >
       {surface === "card" ? (
         <>
