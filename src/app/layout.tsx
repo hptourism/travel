@@ -57,7 +57,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <EnquiryModalProvider>
-          <Header />
+          <Header
+            fleetStand={site.fleetStand}
+            officeShort={site.officeShort}
+            shortName={site.shortName || "HP Tourism"}
+            name={site.name || "Himalayan Travels"}
+          />
           <main id="main" className="flex-1">
             {children}
           </main>

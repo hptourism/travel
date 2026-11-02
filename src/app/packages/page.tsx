@@ -19,7 +19,7 @@ export default function PackagesPage() {
         text="A confirmed Delhi–Shimla–Manali road trip, plus a Chandigarh departure that we quote once you share dates and group size."
       />
       <section className="py-16 sm:py-20">
-        <div className={`${container} grid grid-cols-2 gap-3 sm:gap-5`}>
+        <div className={`${container} grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5`}>
           {packages.map((pkg) => (
             <PackageCard key={pkg.slug} pkg={pkg} />
           ))}

@@ -85,7 +85,7 @@ export default function HomePage() {
             title="Tour packages"
             text="Private road trips for Shimla and Manali, with a full Delhi itinerary and a Chandigarh departure on request."
           />
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5">
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
             {packages.map((pkg) => (
               <PackageCard key={pkg.slug} pkg={pkg} />
             ))}

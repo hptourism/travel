@@ -16,7 +16,7 @@ export function PackageCard({ pkg }: { pkg: TourPackage }) {
           alt={pkg.title}
           fill
           className="object-cover"
-          sizes="(max-width: 1024px) 50vw, 50vw"
+          sizes="(max-width: 640px) 100vw, 50vw"
         />
         <span className="absolute left-2 top-2 rounded-full bg-paper px-2 py-0.5 text-[10px] font-semibold text-pine sm:left-4 sm:top-4 sm:px-3 sm:py-1 sm:text-xs">
           {pkg.tag}
@@ -43,7 +43,7 @@ export function PackageCard({ pkg }: { pkg: TourPackage }) {
             )}
           </p>
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-1.5 sm:mt-4 sm:gap-2">
+        <div className="mt-3 grid grid-cols-1 gap-1.5 sm:mt-4 sm:grid-cols-2 sm:gap-2">
           <Link
             href={`/packages/${pkg.slug}`}
             className={buttonClass("light", "w-full !px-2 !py-2 !text-[11px] sm:!px-4 sm:!py-3 sm:!text-sm")}
