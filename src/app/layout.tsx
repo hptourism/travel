@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Fraunces, Outfit } from "next/font/google";
-import { EnquiryModalProvider } from "@/components/forms/EnquiryModal";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { FloatingContacts } from "@/components/layout/FloatingContacts";
+import { SiteFrame } from "@/components/layout/SiteFrame";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -56,19 +56,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <EnquiryModalProvider>
-          <Header
-            fleetStand={site.fleetStand}
-            officeShort={site.officeShort}
-            shortName={site.shortName || "HP Tourism"}
-            name={site.name || "Himalayan Travels"}
-          />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <FloatingContacts />
-        </EnquiryModalProvider>
+        <SiteFrame
+          header={
+            <Header
+              fleetStand={site.fleetStand}
+              officeShort={site.officeShort}
+              shortName={site.shortName || "HP Tourism"}
+              name={site.name || "Himalayan Travels"}
+            />
+          }
+          footer={<Footer />}
+          floating={<FloatingContacts />}
+        >
+          {children}
+        </SiteFrame>
       </body>
     </html>
   );

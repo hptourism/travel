@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { saveEnquiry } from "@/lib/enquiries";
 import { sendPushover } from "@/lib/pushover";
 
 const startingPoints = new Set(["Delhi", "Chandigarh", "Other"]);
@@ -105,6 +106,27 @@ export async function POST(request: Request) {
     page ? `Page: ${page}` : null,
     `Received: ${when}`,
   ].filter(Boolean);
+
+  const enquiry = {
+    name,
+    phone,
+    email,
+    startingFrom,
+    packageName,
+    travellers,
+    dates,
+    details,
+    page,
+    source,
+  };
+
+  after(async () => {
+    try {
+      await saveEnquiry(enquiry);
+    } catch (error) {
+      console.error("Enquiry could not be stored.", error);
+    }
+  });
 
   const result = await sendPushover(
     `Himachal enquiry — ${name}`.slice(0, 250),
